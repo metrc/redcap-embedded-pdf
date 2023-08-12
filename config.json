@@ -1,0 +1,22 @@
+{
+	"name": "Embedded PDF",
+	"namespace": "METRC\\EmbeddedPDF",
+	"authors": [
+		{
+			"name": "Paige Julianne Sullivan",
+			"email": "psullivan@jhu.edu",
+			"institution": "Johns Hopkins Bloomberg School of Public Health - METRC"
+		}
+	],
+	"description": "Use the action tag @EMBEDDEDPDF",
+    "framework-version": 8,
+    "compatibility": {
+        "redcap-version-min": "11.1.1"
+    },
+	"permissions": [
+        "redcap_data_entry_form"
+	],
+    "enable-every-page-hooks-on-system-pages": false,
+	"system-settings": [ ],
+	"project-settings": [ ]
+}
