@@ -11,11 +11,23 @@ download from the official REDCap Repository through the Control Center.
 
 ## Usage
 I've tried to make this as easy as possible. Simply add the action tag
-`@EMBEDDEDPDF=event_name:form_name:instance` to any field and the module will do the rest.
+`@EMBEDDEDPDF=event_name:form_name:instance` to a **Descriptive Text** field and the module will do the rest.
 
 Where `event_name` is the name of the event, `form_name` is the name of the form, and `instance` is the instance number of the form. If you do not specify an instance, the module will generate a PDF with all instances
 
 Example:  `@EMBEDDEDPDF=baseline:demographics:1`
+
+**NOTE:** If the form you are referencing is blank (contains no data), the module will not generate a PDF.
+**IN ADDITION, the field will be completely hidden on the form.**
+
+You may use multiple calls to `@EMBEDDEDPDF` in a single field. The module will generate a PDF for each call.
+It also interoperates with other action tags.
+
+
+## Known Issues and Planned Features
+* Currently, all instances of a repeating form are included in the PDF
+* Hiding the field if the form is blank will be an optional parameter in the future
+
 
 ## Bug Reporting
 Please report any bugs to the GitHub repository at https://github.com/metrc/redcap-embedded-pdf/issues
