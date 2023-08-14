@@ -1,4 +1,10 @@
 <?php
+/**
+ * Implements the @EMBEDDEDPDF action tag
+ * Author:  Paige Julianne Sullivan <psullivan@jhu.edu>, Johns Hopkins Bloomberg School of Public Health
+ * Repo:   https://github.com/metrc/redcap-embedded-pdf
+ */
+
 namespace METRC\EmbeddedPDF;
 
 use ExternalModules\AbstractExternalModule;
@@ -43,9 +49,8 @@ class EmbeddedPDF extends AbstractExternalModule
 
                 print("<script>$('#$field-tr td:last').append('" . ($html) . "');</script>");
             }
-
         }
-
+        print("<script>window.scrollTo(0, 0);</script>");
     }
 
     protected function findActionTag($dictionary) {
