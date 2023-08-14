@@ -34,7 +34,7 @@ class EmbeddedPDF extends AbstractExternalModule
             } else {
                 $tempName = EDOC_PATH . '/EmbeddedPDF_' . PROJECT_ID . '_' . $record . '_' . $params[0] . '_' . $params[1] . '_' . $params[2] . '.pdf';
 
-                // @TODO:  Returns all instances of the form, not just the one specified
+                // @TODO:  BUG - Returns all instances of the form, not just the one specified
                 $pdfData = REDCap::getPDF($record, $params[1], $params[0], 'false', $params[2], true);
 
                 file_put_contents($tempName, $pdfData);
