@@ -1,6 +1,6 @@
-# EmbeddedPDF External Module for REDCap
+# Embedded PDF External Module for REDCap
 This module allows you to embed PDFs in the middle of your form using
-the actiontag `@EMBEDDEDPDF`. This is useful for displaying PDFs that 
+the action tag `@EMBEDDEDPDF`. This is useful for displaying PDFs that 
 are needed for reviewing prior forms.
 
 ## Installation
