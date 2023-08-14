@@ -30,6 +30,13 @@ class EmbeddedPDF extends AbstractExternalModule
 
             $params = explode(':', $matches[1][0]);
 
+            /*
+             * $params[] =
+             * 0 = event_id or event_name
+             * 1 = instrument
+             * 2 = instance
+             */
+
             if (!is_numeric($params[0])) {
                 // do a lookup on the event name
                 $params[0] = $Proj->getEventIdUsingUniqueEventName($params[0]);
