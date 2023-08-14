@@ -1,7 +1,7 @@
 <?php
 /**
  * Implements the @EMBEDDEDPDF action tag
- * Author:  Paige Julianne Sullivan <psullivan@jhu.edu>, Johns Hopkins Bloomberg School of Public Health
+ * Author:  Paige Julianne Sullivan <psullivan@jhu.edu>, Johns Hopkins Bloomberg School of Public Health - METRC
  * Repo:   https://github.com/metrc/redcap-embedded-pdf
  */
 
