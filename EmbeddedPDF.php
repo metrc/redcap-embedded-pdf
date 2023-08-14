@@ -29,15 +29,20 @@ class EmbeddedPDF extends AbstractExternalModule
                 $params[0] = $Proj->getEventIdUsingUniqueEventName($params[0]);
             }
 
-            $tempName = EDOC_PATH . '/EmbeddedPDF_' . PROJECT_ID . '_' . $record . '_' . $params[0] . '_' . $params[1] . '_' . $params[2]. '.pdf';
+            if ($this->isFormEmpty($record, $params[1], $params[0])) {
+                print("<script>$('#$field-tr').hide();</script>");
+            } else {
+                $tempName = EDOC_PATH . '/EmbeddedPDF_' . PROJECT_ID . '_' . $record . '_' . $params[0] . '_' . $params[1] . '_' . $params[2] . '.pdf';
 
-            $pdfData = REDCap::getPDF($record, $params[1], $params[0], 'false', $params[2], true);
+                // @TODO:  Returns all instances of the form, not just the one specified
+                $pdfData = REDCap::getPDF($record, $params[1], $params[0], 'false', $params[2], true);
 
-            file_put_contents($tempName, $pdfData);
-            $url = SERVER_NAME . $this->getSystemSetting('edocs-web-path') . '/' . basename($tempName);
-            $html = '<iframe src="//' . $url . '" width="800" height="700"></iframe>';
+                file_put_contents($tempName, $pdfData);
+                $url = SERVER_NAME . $this->getSystemSetting('edocs-web-path') . '/' . basename($tempName);
+                $html = '<iframe src="//' . $url . '" width="800" height="800"></iframe>';
 
-            $this->writeJavaScript($field, $html);
+                print("<script>$('#$field-tr td:last').append('" . ($html) . "');</script>");
+            }
 
         }
 
@@ -56,8 +61,18 @@ class EmbeddedPDF extends AbstractExternalModule
         return $fields;
     }
 
-    protected function writeJavaScript($field, $html) {
-        print("<script>$('#$field-tr td:last').append('" . ($html) . "');</script>".PHP_EOL);
+
+    protected function isFormEmpty($record, $instrument, $event_id) {
+        $dataDictionary = REDCap::getDataDictionary(PROJECT_ID, 'array');
+
+        foreach($dataDictionary as $field => $metadata) {
+            if (($metadata['form_name'] == $instrument)) {
+                $instrument_fields[] = $field;
+            }
+        }
+
+        $data = REDCap::getData($this->getProjectId(), 'array', $record, $instrument_fields, $event_id);
+        return empty($data);
     }
 
 
