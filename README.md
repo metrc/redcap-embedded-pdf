@@ -20,8 +20,7 @@ Example:  `@EMBEDDEDPDF=baseline:demographics:1`
 **NOTE:** If the form you are referencing is blank (contains no data), the module will not generate a PDF.
 **IN ADDITION, the field will be completely hidden on the form.**
 
-You may use multiple calls to `@EMBEDDEDPDF` in a single field. The module will generate a PDF for each call.
-It also interoperates with other action tags.
+It interoperates with other action tags.
 
 
 ## Known Issues and Planned Features
