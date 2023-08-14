@@ -11,18 +11,34 @@ use REDCap;
 class EmbeddedPDF extends AbstractExternalModule
 {
     public function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
-        $dataDictionary = REDCap::getDataDictionary($project_id, 'array');
-        $fields = $this->findActionTag($dataDictionary);
-        foreach($fields as $field) {
-            $tempName = $pdf_data = $html = NULL;  // Initialize variables
+        global $Proj;
 
-            $params = $this->getTagParams($dataDictionary[$field]['field_annotation']);
-            $tempName = tempnam(EDOC_PATH, 'EmbeddedPDF') .  rand(). '.pdf';
-            $pdf_data = REDCap::getPDF($record, $params[1], $params[0], 'false', $params[2], true);
-            file_put_contents($tempName, $pdf_data);
-            $html = '<iframe src="//' . SERVER_NAME . $tempName . '" width="650" height="700"></iframe>';
+        $dataDictionary = REDCap::getDataDictionary($project_id, 'array');
+
+        $fields = $this->findActionTag($dataDictionary);
+
+        foreach($fields as $field) {
+            $tempName = $pdfData = $html = NULL;  // Initialize variables
+            // get the action tag from the field annotation
+            preg_match_all('/@EMBEDDEDPDF=([\S]+)/', $dataDictionary[$field]['field_annotation'], $matches);
+
+            $params = explode(':', $matches[1][0]);
+
+            if (!is_numeric($params[0])) {
+                // do a lookup on the event name
+                $params[0] = $Proj->getEventIdUsingUniqueEventName($params[0]);
+            }
+
+            $tempName = EDOC_PATH . '/EmbeddedPDF_' . PROJECT_ID . '_' . $record . '_' . $params[0] . '_' . $params[1] . '_' . $params[2]. '.pdf';
+
+            $pdfData = REDCap::getPDF($record, $params[1], $params[0], 'false', $params[2], true);
+
+            file_put_contents($tempName, $pdfData);
+            $url = SERVER_NAME . $this->getSystemSetting('edocs-web-path') . '/' . basename($tempName);
+            $html = '<iframe src="//' . $url . '" width="800" height="700"></iframe>';
 
             $this->writeJavaScript($field, $html);
+
         }
 
     }
@@ -30,7 +46,10 @@ class EmbeddedPDF extends AbstractExternalModule
     protected function findActionTag($dictionary) {
         $fields = [];
         foreach ($dictionary as $field => $metadata) {
-            if (($metadata['field_annotation'])  && (substr(trim($metadata['field_annotation']), 0, 12) == '@EMBEDDEDPDF')) {
+            if (($metadata['field_annotation'])  &&
+                (preg_match('/@EMBEDDEDPDF=([\S]+)/', $metadata['field_annotation']))
+                && ($metadata['form_name'] == $_GET['page'])) {
+
                 $fields[] = $field;
             }
         }
@@ -38,15 +57,7 @@ class EmbeddedPDF extends AbstractExternalModule
     }
 
     protected function writeJavaScript($field, $html) {
-        print("<script>$('#$field-tr td:last').append('" . ($html) . "');</script>");
-    }
-
-    protected function getTagParams($field_annotation) {
-        $params = [];
-        $tag = substr(trim($field_annotation), 13);
-        $params = explode(':', $tag);
-
-        return $params;
+        print("<script>$('#$field-tr td:last').append('" . ($html) . "');</script>".PHP_EOL);
     }
 
 

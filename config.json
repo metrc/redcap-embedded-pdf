@@ -8,6 +8,11 @@
 			"institution": "Johns Hopkins Bloomberg School of Public Health - METRC"
 		}
 	],
+	"versions": [
+		{
+			"0.1.0" : "Initial version of the module"
+		}
+	],
 	"description": "Use the action tag @EMBEDDEDPDF",
     "framework-version": 8,
     "compatibility": {
@@ -17,6 +22,12 @@
         "redcap_data_entry_form"
 	],
     "enable-every-page-hooks-on-system-pages": false,
-	"system-settings": [ ],
+	"system-settings": [
+		{
+			"key": "edocs-web-path",
+			"name": "Enter the WEB path to your edocs folder, without hostname.  e.g. '/edocs'",
+			"type": "text"
+		}
+	],
 	"project-settings": [ ]
 }
