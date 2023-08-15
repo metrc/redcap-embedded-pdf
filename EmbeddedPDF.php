@@ -16,6 +16,8 @@ use REDCap;
 
 class EmbeddedPDF extends AbstractExternalModule
 {
+    public $tag = '@EMBEDDEDPDF';
+
     public function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
         global $Proj;
 
