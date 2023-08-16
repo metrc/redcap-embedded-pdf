@@ -44,6 +44,22 @@ class EmbeddedPDF extends AbstractExternalModule
                 $params[0] = $Proj->getEventIdUsingUniqueEventName($params[0]);
             }
 
+            if ($params[2] == '[current_instance]') {
+                $params[2] = $repeat_instance;
+            }
+            if ($params[2] == '[first_instance]') {
+                $params[2] = 1;
+            }
+            if ($params[2] == '[last_instance]') {
+                $params[2] = 0;
+            }
+            if ($params[2] == '[all_instances]') {
+                $params[2] = 0;
+            }
+            if ($params[1] == '[previous_instance]') {
+                $params[2] = $repeat_instance - 1;
+            }
+
 
             if ($this->isFormEmpty($record, $params[1], $params[0])) {
                 print("<script>$('#$field-tr').hide();</script>");
