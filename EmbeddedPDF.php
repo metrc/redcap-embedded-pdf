@@ -48,9 +48,10 @@ class EmbeddedPDF extends AbstractExternalModule
                 print("<script>$('#$field-tr').hide();</script>");
             } else {
                 $tempName = EDOC_PATH . '/embeddedpdf_' . PROJECT_ID . '_' . $record . '_' . $params[0] . '_' . $params[1] . '_' . $params[2] . '.pdf';
-
+                // delete the existing file if it exists
+                unlink($tempName);
                 // @TODO:  BUG - Returns all instances of the form, reported at https://redcap.vanderbilt.edu/community/post.php?id=212357
-                $pdfData = REDCap::getPDF($record, $params[1], $params[0], 'false', $params[2], true);
+                $pdfData = REDCap::getPDF((int)$record, (int)$params[1], (int)$params[0], 'false', (int)$params[2], true);
 
                 file_put_contents($tempName, $pdfData);
                 $url = SERVER_NAME . $this->getSystemSetting('edocs-web-path') . '/' . basename($tempName);
