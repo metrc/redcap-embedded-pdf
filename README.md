@@ -1,6 +1,3 @@
-# REDCap-EMBEDDEDPDF
-@EMBEDDEDPDF=event_name:form_name:instance
-
 # Embedded PDF External Module for REDCap
 This module allows you to embed PDFs in the middle of your form using
 the action tag `@EMBEDDEDPDF`. This is useful for displaying PDFs that 
