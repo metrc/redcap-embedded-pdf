@@ -60,8 +60,12 @@ class EmbeddedPDF extends AbstractExternalModule
             if ($params[2] == '[previous-instance]') {
                 $params[2] = $repeat_instance - 1;
                 if ($params[2] == 0) {
-                    $params[2] = 1;
+                    $params[2] = PHP_INT_MAX;
                 }
+            }
+
+            if ($params[2] == '') {
+                $params[2] = 0;
             }
 
 
