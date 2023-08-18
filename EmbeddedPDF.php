@@ -45,6 +45,16 @@ class EmbeddedPDF extends AbstractExternalModule
                 $params[0] = $Proj->getEventIdUsingUniqueEventName($params[0]);
             }
 
+            // for NON-longitudinal projects, get the first (and only) event_id
+            if ($params[0] == 0 || $params[0] == '') {
+                $params[0] = $this->getFirstEventId();
+            }
+
+
+            if (($params[0] == 0) || ($params[0] == '')) {
+                $params[0] = NULL;
+            }
+
             if ($params[2] == '[current-instance]') {
                 $params[2] = $repeat_instance;
             }
@@ -63,7 +73,6 @@ class EmbeddedPDF extends AbstractExternalModule
                     $params[2] = PHP_INT_MAX;
                 }
             }
-
             if ($params[2] == '') {
                 $params[2] = 0;
             }
@@ -76,6 +85,7 @@ class EmbeddedPDF extends AbstractExternalModule
                 // delete the existing file if it exists
                 unlink($tempName);
 
+                // echo "DEBUG - REDCAP::getPDF($record, $params[1], $params[0], false, $params[2], true)";
                 $pdfData = REDCap::getPDF((int)$record, $params[1], (int)$params[0], 'false', (int)$params[2], true);
 
                 file_put_contents($tempName, $pdfData);
