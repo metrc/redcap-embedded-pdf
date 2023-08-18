@@ -26,6 +26,7 @@ class EmbeddedPDF extends AbstractExternalModule
         $fields = $this->findActionTag($dataDictionary);
 
         foreach($fields as $field) {
+            echo PHP_EOL, PHP_EOL;
             $tempName = $pdfData = $html = NULL;  // Initialize variables
             // get the action tag from the field annotation
             preg_match_all('/@EMBEDDEDPDF=([\S]+)/', $dataDictionary[$field]['field_annotation'], $matches);
@@ -61,8 +62,8 @@ class EmbeddedPDF extends AbstractExternalModule
             }
 
 
-            if ($this->isFormEmpty($record, $params[1], $params[0])) {
-                print("<script>$('#$field-tr').hide();</script>");
+            if ($this->isFormEmpty($record, $params[1], $params[0], $params[2])) {
+                print("<script>$('#$field-tr').hide();</script>" . PHP_EOL);
             } else {
                 $tempName = EDOC_PATH . '/embeddedpdf_' . PROJECT_ID . '_' . $record . '_' . $params[0] . '_' . $params[1] . '_' . $params[2] . '.pdf';
                 // delete the existing file if it exists
@@ -74,10 +75,11 @@ class EmbeddedPDF extends AbstractExternalModule
                 $url = SERVER_NAME . $this->getSystemSetting('edocs-web-path') . '/' . basename($tempName);
                 $html = '<iframe src="//' . $url . '" width="800" height="800"></iframe>';
 
-                print("<script>$('#$field-tr td:last').append('" . ($html) . "');</script>");
+                print("<script>$('#$field-tr td:last').append('" . ($html) . "');</script>" . PHP_EOL);
             }
         }
         print("<script>window.scrollTo(0, 0);</script>");
+        echo PHP_EOL, PHP_EOL;
     }
 
     protected function findActionTag($dictionary) {
@@ -94,7 +96,7 @@ class EmbeddedPDF extends AbstractExternalModule
     }
 
 
-    protected function isFormEmpty($record, $instrument, $event_id) {
+    protected function isFormEmpty($record, $instrument, $event_id, $instance = 1) {
         $dataDictionary = REDCap::getDataDictionary(PROJECT_ID, 'array');
 
         foreach($dataDictionary as $field => $metadata) {
@@ -104,7 +106,20 @@ class EmbeddedPDF extends AbstractExternalModule
         }
 
         $data = REDCap::getData($this->getProjectId(), 'array', $record, $instrument_fields, $event_id);
-        return empty($data);
+
+        // instance COULD be 0, so we need to check for that first
+        if ((isset($data[$record]['repeat_instances'][$event_id][""]) ||
+                (isset($data[$record]['repeat_instances'][$event_id][$instrument]))) && ($instance == 0)) {
+            return false;
+        }
+
+        if (isset($data[$record]['repeat_instances'][$event_id][""][$instance]) ||
+            isset($data[$record]['repeat_instances'][$event_id][$instrument][$instance])) {
+            return false;
+        }
+        return true;
+
+
     }
 
 
