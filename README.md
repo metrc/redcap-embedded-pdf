@@ -16,7 +16,11 @@ download from the official REDCap Repository through the Control Center.
 I've tried to make this as easy as possible. Simply add the action tag
 `@EMBEDDEDPDF=event_name:form_name:instance` to a **Descriptive Text** field and the module will do the rest.
 
-Where `event_name` is the name of the event or unique ID, `form_name` is the name of the form, and `instance` is the instance number of the form.
+*The PDF will be appended to the text in the field, so you can add headers that will be shown before the PDF.*
+
+Where `event_name` is the name of the event or unique event ID (as assigned by REDCap), `form_name` is the name of the form, and `instance` is the instance number of the form.
+
+For non-longitudinal projects, you can either omit the event name or pass `0` as the event name.
 
 You can also use the selected smart variables in place of the instance number:
 * `[first-instance]`
@@ -41,7 +45,7 @@ Please report any bugs to the GitHub repository at https://github.com/metrc/redc
 
 ## Author
 Paige Julianne Sullivan<br>
-psullivan@jhu.edu<br>
+[psullivan@jhu.edu](psullivan@jhu.edu)<br>
 Major Extremity Trauma Research Consortium<br>
 Bloomberg School of Public Health<br>
 Johns Hopkins University<br>
