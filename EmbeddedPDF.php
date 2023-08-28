@@ -1,17 +1,15 @@
 <?php
 /**
  * Implements the @EMBEDDEDPDF action tag
- * Author:  Paige Julianne Sullivan <psullivan@jhu.edu>, Johns Hopkins Bloomberg School of Public Health - METRC
- * Repo:   https://github.com/metrc/redcap-embedded-pdf
+ * Author:      Paige Julianne Sullivan <psullivan@jhu.edu>, Johns Hopkins Bloomberg School of Public Health - METRC
+ * Repo:        https://github.com/metrc/redcap-embedded-pdf
+ * Copyright:   2023 The Johns Hopkins University
+ * License:     MIT
  */
 
 namespace METRC\EmbeddedPDF;
 
 use ExternalModules\AbstractExternalModule;
-use DateTimeRC;
-use Files;
-use Form;
-use RCView;
 use REDCap;
 
 class EmbeddedPDF extends AbstractExternalModule
@@ -21,72 +19,60 @@ class EmbeddedPDF extends AbstractExternalModule
     public function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
         global $Proj;
 
-        $dataDictionary = REDCap::getDataDictionary($project_id, 'array');
+        $dataDictionary = REDCap::getDataDictionary(PROJECT_ID, 'array');
 
         $fields = $this->findActionTag($dataDictionary);
 
         foreach($fields as $field) {
-            echo PHP_EOL, PHP_EOL;
             $tempName = $pdfData = $html = NULL;  // Initialize variables
+
             // get the action tag from the field annotation
             preg_match_all('/@EMBEDDEDPDF=([\S]+)/', $dataDictionary[$field]['field_annotation'], $matches);
 
-            $params = explode(':', $matches[1][0]);
+            list($pdf_event_id, $pdf_instrument, $pdf_instance) = explode(':', $matches[1][0]);
 
-            /*
-             * $params[] =
-             * 0 = event_id or event_name
-             * 1 = instrument
-             * 2 = instance
-             */
-
-            if (!is_numeric($params[0])) {
+            if (!is_numeric($pdf_event_id)) {
                 // do a lookup on the event name
-                $params[0] = $Proj->getEventIdUsingUniqueEventName($params[0]);
+                $pdf_event_id = $Proj->getEventIdUsingUniqueEventName($pdf_event_id);
             }
 
             // for NON-longitudinal projects, get the first (and only) event_id
-            if ($params[0] == 0 || $params[0] == '') {
-                $params[0] = $this->getFirstEventId();
+            if ($pdf_event_id == 0 || $pdf_event_id == '') {
+                $pdf_event_id = $this->getFirstEventId();
+            }
+
+            switch ($pdf_instance) {
+                case '[current-instance]':
+                    $pdf_instance = $repeat_instance;
+                    break;
+                case '[first-instance]':
+                    $pdf_instance = 1;
+                    break;
+                case '[last-instance]':
+                    $pdf_instance = PHP_INT_MAX;
+                    break;
+                case '[all-instances]':
+                case '':
+                    $pdf_instance = 0;
+                    break;
+                case '[previous-instance]':
+                    $pdf_instance = $repeat_instance - 1;
+                    if ($pdf_instance == 0) {
+                        $pdf_instance = PHP_INT_MAX;
+                    }
+                    break;
             }
 
 
-            if (($params[0] == 0) || ($params[0] == '')) {
-                $params[0] = NULL;
-            }
-
-            if ($params[2] == '[current-instance]') {
-                $params[2] = $repeat_instance;
-            }
-            if ($params[2] == '[first-instance]') {
-                $params[2] = 1;
-            }
-            if ($params[2] == '[last-instance]') {
-                $params[2] = 9999999;
-            }
-            if ($params[2] == '[all-instances]') {
-                $params[2] = 0;
-            }
-            if ($params[2] == '[previous-instance]') {
-                $params[2] = $repeat_instance - 1;
-                if ($params[2] == 0) {
-                    $params[2] = PHP_INT_MAX;
-                }
-            }
-            if ($params[2] == '') {
-                $params[2] = 0;
-            }
-
-
-            if ($this->isFormEmpty($record, $params[1], $params[0], $params[2])) {
+            if ($this->isFormEmpty($record, $pdf_instrument, $pdf_event_id, $pdf_instance)) {
                 print("<script>$('#$field-tr').hide();</script>" . PHP_EOL);
             } else {
-                $tempName = EDOC_PATH . '/embeddedpdf_' . PROJECT_ID . '_' . $record . '_' . $params[0] . '_' . $params[1] . '_' . $params[2] . '.pdf';
+                $tempName = EDOC_PATH . '/embeddedpdf_' . PROJECT_ID . '_' . $record . '_' . $pdf_event_id . '_' . $pdf_instrument . '_' . $pdf_instance . '.pdf';
                 // delete the existing file if it exists
                 unlink($tempName);
 
-                // echo "DEBUG - REDCAP::getPDF($record, $params[1], $params[0], false, $params[2], true)";
-                $pdfData = REDCap::getPDF((int)$record, $params[1], (int)$params[0], 'false', (int)$params[2], true);
+                // echo "DEBUG - REDCAP::getPDF($record, $pdf_instrument, $pdf_event_id, false, $pdf_instance, true)";
+                $pdfData = REDCap::getPDF((int)$record, $pdf_instrument, (int)$pdf_event_id, 'false', (int)$pdf_instance, true);
 
                 file_put_contents($tempName, $pdfData);
                 $url = SERVER_NAME . $this->getSystemSetting('edocs-web-path') . '/' . basename($tempName);
@@ -122,7 +108,7 @@ class EmbeddedPDF extends AbstractExternalModule
             }
         }
 
-        $data = REDCap::getData($this->getProjectId(), 'array', $record, $instrument_fields, $event_id);
+        $data = REDCap::getData(PROJECT_ID, 'array', $record, $instrument_fields, $event_id);
 
         // instance COULD be 0, so we need to check for that first
         if ((isset($data[$record]['repeat_instances'][$event_id][""]) ||
