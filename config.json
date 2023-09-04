@@ -10,11 +10,11 @@
 	],
 	"versions": [
 		{
-			"0.1.0" : "Initial version of the module"
+			"1.0.0" : "Initial version of the module"
 		}
 	],
 	"description": "Use the action tag @EMBEDDEDPDF",
-    "framework-version": 8,
+    "framework-version": 12,
     "compatibility": {
         "redcap-version-min": "11.1.1"
     },
@@ -28,6 +28,5 @@
 			"name": "Enter the WEB path to your edocs folder, without hostname.  e.g. '/edocs'",
 			"type": "text"
 		}
-	],
-	"project-settings": [ ]
+	]
 }

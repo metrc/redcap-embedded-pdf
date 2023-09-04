@@ -4,8 +4,6 @@ the action tag `@EMBEDDEDPDF`. This is useful for displaying PDFs that
 are needed for reviewing prior forms.
 
 ## Installation
-* Download from GitHub at https://github.com/metrc/redcap-embedded-pdf and clone this repo into to your modules directory -OR-
-download from the official REDCap Repository through the Control Center.
 * Enable the module through the Control Panel
 * Set the web path to your eDocs folder in the module configuration page
 
@@ -17,7 +15,7 @@ I've tried to make this as easy as possible. Simply add the action tag
 
 Where `event_name` is the name of the event or unique event ID (as assigned by REDCap), `form_name` is the name of the form, and `instance` is the instance number of the form.
 
-For non-longitudinal projects, you can either omit the event name or pass `0` as the event name.
+For non-longitudinal projects,  pass `0` as the event name.
 
 You can also use the selected smart variables in place of the instance number:
 * `[first-instance]`
@@ -26,16 +24,12 @@ You can also use the selected smart variables in place of the instance number:
 * `[previous-instance]`
 * `[all-instances]` (same as passing no instance number or 0)
 
-Example:  `@EMBEDDEDPDF=baseline:demographics:[current-instance]`
+Example:  `@EMBEDDEDPDF=baseline_arm_1:demographics:[current-instance]`
 
 **NOTE:** If the form you are referencing is blank (contains no data), the module will not generate a PDF.
 **IN ADDITION, the field will be completely hidden on the form.**
 
 It interoperates with other action tags.
-
-
-
-
 
 ## Bug Reporting
 Please report any bugs to the GitHub repository at https://github.com/metrc/redcap-embedded-pdf/issues
