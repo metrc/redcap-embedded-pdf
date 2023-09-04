@@ -63,7 +63,6 @@ class EmbeddedPDF extends AbstractExternalModule
                     break;
             }
 
-
             if ($this->isFormEmpty($record, $pdf_instrument, $pdf_event_id, $pdf_instance)) {
                 print("<script>$('#$field-tr').hide();</script>" . PHP_EOL);
             } else {
@@ -71,7 +70,6 @@ class EmbeddedPDF extends AbstractExternalModule
                 // delete the existing file if it exists
                 unlink($tempName);
 
-                // echo "DEBUG - REDCAP::getPDF($record, $pdf_instrument, $pdf_event_id, false, $pdf_instance, true)";
                 $pdfData = REDCap::getPDF((int)$record, $pdf_instrument, (int)$pdf_event_id, 'false', (int)$pdf_instance, true);
 
                 file_put_contents($tempName, $pdfData);
@@ -110,6 +108,11 @@ class EmbeddedPDF extends AbstractExternalModule
 
         $data = REDCap::getData(PROJECT_ID, 'array', $record, $instrument_fields, $event_id);
 
+        // fix for non-longitudinal projects
+        if (isset($data[$record][$event_id])) {
+            return false;
+        }
+
         // instance COULD be 0, so we need to check for that first
         if ((isset($data[$record]['repeat_instances'][$event_id][""]) ||
                 (isset($data[$record]['repeat_instances'][$event_id][$instrument]))) && ($instance == 0)) {
@@ -120,6 +123,7 @@ class EmbeddedPDF extends AbstractExternalModule
             isset($data[$record]['repeat_instances'][$event_id][$instrument][$instance])) {
             return false;
         }
+
         return true;
 
 
