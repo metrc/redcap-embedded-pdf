@@ -21,7 +21,7 @@ class EmbeddedPDF extends AbstractExternalModule
 
         $dataDictionary = REDCap::getDataDictionary(PROJECT_ID, 'array');
 
-        $fields = $this->findActionTag($dataDictionary);
+        $fields = $this->findActionTag($dataDictionary, $instrument);
 
         foreach($fields as $field) {
             $tempName = $pdfData = $html = NULL;  // Initialize variables
@@ -83,12 +83,12 @@ class EmbeddedPDF extends AbstractExternalModule
         echo PHP_EOL, PHP_EOL;
     }
 
-    protected function findActionTag($dictionary) {
+    protected function findActionTag($dictionary, $instrument) {
         $fields = [];
         foreach ($dictionary as $field => $metadata) {
             if (($metadata['field_annotation'])  &&
                 (preg_match('/@EMBEDDEDPDF=([\S]+)/', $metadata['field_annotation']))
-                && ($metadata['form_name'] == $_GET['page'])) {
+                && ($metadata['form_name'] == $instrument)) {
 
                 $fields[] = $field;
             }
