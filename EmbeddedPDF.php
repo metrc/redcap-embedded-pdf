@@ -16,7 +16,7 @@ class EmbeddedPDF extends AbstractExternalModule
 {
     public $tag = '@EMBEDDEDPDF';
 
-    public function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
+    public function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance) {
         global $Proj;
 
         $dataDictionary = REDCap::getDataDictionary(PROJECT_ID, 'array');
