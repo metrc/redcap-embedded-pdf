@@ -24,5 +24,6 @@
 			"name": "Enter the WEB path to your edocs folder, without hostname.  e.g. '/edocs'",
 			"type": "text"
 		}
-	]
+	],
+	"framework-version": 8
 }
