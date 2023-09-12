@@ -16,7 +16,7 @@
 		}
 	],
 	"description": "Use the action tag @EMBEDDEDPDF",
-    "framework-version": 12,
+
     "enable-every-page-hooks-on-system-pages": false,
 	"system-settings": [
 		{
